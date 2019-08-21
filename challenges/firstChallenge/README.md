@@ -36,35 +36,44 @@ Note that the answer must be a substring, `pwke` is a subsequence and not a subs
 Build Requirements
 ------------------
 ```
-# Build Requirements here
+Python 3
+Any bash or cmd
 ```
 
 
 How to build
 ------------
+Copy this code to a text file with the extension .py
 ```
-# instructions here
+txt = input("Write letters\n");
+wrd=0
+prevlet=[]
+for let in txt:
+	if let in prevlet :
+		if wrd<len(prevlet):
+			wrd=len(prevlet)
+		prevlet=prevlet[prevlet.index(let)+1:]
+		prevlet.append(let)
+	else:
+		prevlet.append(let)
+if wrd<len(prevlet):
+			wrd=len(prevlet)
+print("The longest word have "+str(wrd)+" characters")
 ```
-
 
 How to Run
 ----------
 ```
-# instructions here
+execute the .py file with python in any cmd or bash
 ```
 
 
-General instructions
---------------------
-1. Don't forget to do a `pull --rebase origin master` before anything.
-2. Submit your code to your personal fork.
-3. Don't forget to update this `README.md` file with your project's `requirements`, `build` and `how to run` sections.
-4. Have fun and don't forget the next section.
-
-
-How to submit your work
-=======================
+Submission Requirements
+-----------------------
+- Use the programming language of your choice
+- Fill the [Build Requirements](#build-requirements), [How to build](#how-to-Build) and [How to Run](#how-to-run) sections on this `README.md` file.
+- You can use an online IDE for testing your code (e.g. https://ideone.com/)
+- Submit your solution with:
 ```
-GITHUB_USER=<your_github_user>  make submit
+make submit
 ```
-More details at: [Classify API](../../classify.md)
