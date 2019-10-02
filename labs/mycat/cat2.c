@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+   
 /* filecopy:  copy file ifp to file ofp */
 void filecopy(FILE *ifp, FILE *ofp)
 {
