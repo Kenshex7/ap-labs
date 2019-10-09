@@ -25,5 +25,6 @@ More details at: [Classify API](../../classify.md)
 
 Mycat took twice the time that the original cat take.
 Here is the evidence using time:
-https://github.com/Kenshex7/ap-labs/blob/mycat/labs/mycat/Mycat.png
-https://github.com/Kenshex7/ap-labs/blob/mycat/labs/mycat/Cat.png
+https://raw.githubusercontent.com/Kenshex7/ap-labs/mycat/labs/mycat/Mycat.png
+https://raw.githubusercontent.com/Kenshex7/ap-labs/mycat/labs/mycat/Cat.png
+
