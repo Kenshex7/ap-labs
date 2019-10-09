@@ -19,3 +19,11 @@ How to submit your work
 GITHUB_USER=<your_github_user>  make submit
 ```
 More details at: [Classify API](../../classify.md)
+
+# Report
+----------------------
+
+Mycat took twice the time that the original cat take.
+Here is the evidence using time:
+https://github.com/Kenshex7/ap-labs/blob/mycat/labs/mycat/Mycat.png
+https://github.com/Kenshex7/ap-labs/blob/mycat/labs/mycat/Cat.png
