@@ -18,7 +18,7 @@ int main(){
     initLogger("syslog");
     infof("INFO Message %d", 1);
     warnf("WARN Message %d", 2);
-    errorf("ERROR Message %d", 2);
+    errorf("ERROR Message %d", 3);
 
     return 0;
 }
