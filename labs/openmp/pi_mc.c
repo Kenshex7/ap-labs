@@ -84,6 +84,7 @@ History:
 #include <stdio.h>
 #include <omp.h>
 #include "random.h"
+#include "logger.h"
 
 //
 // The monte carlo pi program
@@ -111,7 +112,7 @@ int main ()
 
     pi = 4.0 * ((double)Ncirc/(double)num_trials);
 
-    printf("\n %d trials, pi is %f \n",num_trials, pi);
+    infof("\n %ld trials, pi is %f \n",num_trials, pi);
 
     return 0;
 }

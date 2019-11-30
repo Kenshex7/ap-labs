@@ -15,6 +15,7 @@
 **  HISTORY: Written by Tim Mattson, Nov 1999.
 */
 #include <stdio.h>
+#include <stdlib.h>
 #include <omp.h>
 
 #define ORDER 1000
