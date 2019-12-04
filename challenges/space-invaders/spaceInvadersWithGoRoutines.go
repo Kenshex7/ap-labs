@@ -51,9 +51,6 @@ var numAliens int
 var score int
 var live int 
 
-basicAtlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
-basicTxt := text.New(pixel.V(100, 500), basicAtlas)
-
 func callGo(f func()) {
   atomic.AddUint64(&gos, 1)
   go f()
@@ -91,7 +88,6 @@ func (p *spaceShip) actions() { // for spaceShip (player)
       p.alive = false
       ms.registerChannel <- msg{cmd: "Remove", p: *p}
       if p.kind == "Gun" {
-        fmt.Fprintln(basicTxt, "You lose!!!!")
         fmt.Println("Damn and blast")
         <-make(chan bool)
       }
@@ -255,6 +251,8 @@ func (m *motherShip) actions() { // for motherShip (enemy o barrier)
           }
           window.Clear(colornames.Black)
           imd.Draw(window)
+          basicAtlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
+          basicTxt := text.New(pixel.V(100, 500), basicAtlas)
           fmt.Fprintln(basicTxt, "Score: ", score)
           fmt.Fprintln(basicTxt, "Lives: ", live)
           basicTxt.Draw(window, pixel.IM)

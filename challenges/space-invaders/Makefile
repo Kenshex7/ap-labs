@@ -1,34 +1,33 @@
-# Makefile taken from https://sohlich.github.io/post/go_makefile/
-# Basic go commands
-
+# Go parameters
 GOCMD=go
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
+GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
-
-# Binary names
-BINARY_NAME= SpaceInvaders
+BINARY_NAME=SpaceInvaders
 BINARY_UNIX=$(BINARY_NAME)_unix
 
-build:
-	$(GOGET) -v
+all: test build
+build: 
 	$(GOBUILD) -o $(BINARY_NAME) -v
-
-run:
-	$(GOGET) -v
-	$(GOBUILD) -o $(BINARY_NAME) -v ./...
-	./$(BINARY_NAME)
-
-clean:
+test: 
+	$(GOTEST) -v ./...
+clean: 
 	$(GOCLEAN)
 	rm -f $(BINARY_NAME)
 	rm -f $(BINARY_UNIX)
-
+run:
+	$(GOBUILD) -o $(BINARY_NAME) -v ./...
+	./$(BINARY_NAME)
 deps:
-    $(GOGET) "github.com/faiface/pixel"
-    $(GOGET) "github.com/faiface/pixel/imdraw"
-    $(GOGET) "github.com/faiface/pixel/pixelgl"
-    $(GOGET) "golang.org/x/image/colornames"
+	$(GOGET) github.com/faiface/pixel
+	$(GOGET) github.com/faiface/pixel/imdraw
+	$(GOGET) github.com/faiface/pixel/pixelgl
+	$(GOGET) golang.org/x/image/colornames
 
+
+# Cross compilation
 build-linux:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_UNIX) -v
+docker-build:
+	docker run --rm -it -v "$(GOPATH)":/go -w /go/src/bitbucket.org/rsohlich/makepost golang:latest go build -o "$(BINARY_UNIX)" -v
