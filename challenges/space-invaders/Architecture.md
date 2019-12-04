@@ -90,8 +90,7 @@ func populate() {
 
 The following graph was used for the Space Invaders
 
-https://raw.githubusercontent.com/Kenshex7/ap-labs/space-invaders/challenges/space-invaders/ArchitectureDiagram.png
-
+![Architecture Diagram](https://raw.githubusercontent.com/Kenshex7/ap-labs/space-invaders/challenges/space-invaders/ArchitectureDiagram.png)
 ### Libraries
 - PixelGL
 
