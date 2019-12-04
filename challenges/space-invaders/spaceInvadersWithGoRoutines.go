@@ -10,6 +10,8 @@ import (
   "github.com/faiface/pixel"
   "github.com/faiface/pixel/imdraw"
   "github.com/faiface/pixel/pixelgl"
+  "github.com/faiface/pixel/text"
+  "golang.org/x/image/font/basicfont"
   "golang.org/x/image/colornames"
 )
 
@@ -46,6 +48,11 @@ var ms = motherShip{register: make(map[string]spaceShip), childrenChannels: make
 var channelSpeed int
 var shipSpeed int
 var numAliens int
+var score int
+var live int 
+
+basicAtlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
+basicTxt := text.New(pixel.V(100, 500), basicAtlas)
 
 func callGo(f func()) {
   atomic.AddUint64(&gos, 1)
@@ -84,6 +91,7 @@ func (p *spaceShip) actions() { // for spaceShip (player)
       p.alive = false
       ms.registerChannel <- msg{cmd: "Remove", p: *p}
       if p.kind == "Gun" {
+        fmt.Fprintln(basicTxt, "You lose!!!!")
         fmt.Println("Damn and blast")
         <-make(chan bool)
       }
@@ -105,7 +113,7 @@ func (p *spaceShip) actions() { // for spaceShip (player)
       var yPixPerBeat = p.vy / 1000 * float64(shipSpeed)
       p.x = p.x + xPixPerBeat
       if p.alive && p.kind == "Alien" {
-        if rand.Intn(10000) < 1 {
+        if rand.Intn(950) < 1 {
           ms.generalChannel <- msg{cmd: "Add", val: "Bomb", p: spaceShip{x: p.x, y: p.y, vx: 0, vy: -100}}
         }
         if p.x > 500 || p.x < 10 {
@@ -131,8 +139,6 @@ func (p *spaceShip) actions() { // for spaceShip (player)
 
 func (m *motherShip) actions() { // for motherShip (enemy o barrier)
   for {
-    fmt.Printf("Num Go Routines: %v Num msgs in generalChannel: %v  Num msgs in registerChannel: %v\n", atomic.LoadUint64(&gos), len(ms.generalChannel), len(ms.registerChannel))
-
     select {
     case message := <-m.registerChannel:
       if message.cmd == "Set" {
@@ -157,6 +163,7 @@ func (m *motherShip) actions() { // for motherShip (enemy o barrier)
               if s2.alive && (s2.kind == "Alien" || s2.kind == "Fortress") {
                 if (s2.x-s1.x)*(s2.x-s1.x)+(s2.y-s1.y)*(s2.y-s1.y) < 40 {
                   *m.childrenChannels[s2.name] <- msg{cmd: "Die"}
+                  score += 10
                   *m.childrenChannels[s1.name] <- msg{cmd: "Die"}
                 }
               }
@@ -164,7 +171,17 @@ func (m *motherShip) actions() { // for motherShip (enemy o barrier)
           }
           if s1.alive && s1.kind == "Bomb" {
             for _, s2 := range m.register {
-              if s2.alive && (s2.kind == "Gun" || s2.kind == "Fortress") {
+              if s2.alive && s2.kind == "Gun" {
+                if (s2.x-s1.x)*(s2.x-s1.x)+(s2.y-s1.y)*(s2.y-s1.y) < 40 {
+                  *m.childrenChannels[s2.name] <- msg{cmd: "One live less"}
+                  live--
+                  if live == 0 {
+                    *m.childrenChannels[s2.name] <- msg{cmd: "Die"}
+                  }
+                  *m.childrenChannels[s1.name] <- msg{cmd: "Die"}
+                }
+              }
+              if s2.alive && s2.kind == "Fortress" {
                 if (s2.x-s1.x)*(s2.x-s1.x)+(s2.y-s1.y)*(s2.y-s1.y) < 40 {
                   *m.childrenChannels[s2.name] <- msg{cmd: "Die"}
                   *m.childrenChannels[s1.name] <- msg{cmd: "Die"}
@@ -174,7 +191,17 @@ func (m *motherShip) actions() { // for motherShip (enemy o barrier)
           }
           if s1.alive && s1.kind == "Alien" {
             for _, s2 := range m.register {
-              if s2.alive && (s2.kind == "Gun" || s2.kind == "Fortress") {
+              if s2.alive && s2.kind == "Gun" {
+                if (s2.x-s1.x)*(s2.x-s1.x)+(s2.y-s1.y)*(s2.y-s1.y) < 40 {
+                  *m.childrenChannels[s2.name] <- msg{cmd: "One live less"}
+                  live--
+                  if live == 0 {
+                    *m.childrenChannels[s2.name] <- msg{cmd: "Die"}
+                  }
+                  *m.childrenChannels[s1.name] <- msg{cmd: "Die"}
+                }
+              }
+              if s2.alive && s2.kind == "Fortress" {
                 if (s2.x-s1.x)*(s2.x-s1.x)+(s2.y-s1.y)*(s2.y-s1.y) < 40 {
                   *m.childrenChannels[s2.name] <- msg{cmd: "Die"}
                   *m.childrenChannels[s1.name] <- msg{cmd: "Die"}
@@ -228,6 +255,9 @@ func (m *motherShip) actions() { // for motherShip (enemy o barrier)
           }
           window.Clear(colornames.Black)
           imd.Draw(window)
+          fmt.Fprintln(basicTxt, "Score: ", score)
+          fmt.Fprintln(basicTxt, "Lives: ", live)
+          basicTxt.Draw(window, pixel.IM)
           window.Update()
         }
       }
@@ -266,6 +296,7 @@ func start() {
 func main() {
   channelSpeed = 8
   shipSpeed = 17
+  live = 10
   flag.IntVar(&numAliens, "aliens", 5, "Number of aliens")
 
   flag.Parse()
