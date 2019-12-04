@@ -1,30 +1,34 @@
-include ../common.mk
-# Go parameters
-    GOCMD=go
-    GOBUILD=$(GOCMD) build
-    GOCLEAN=$(GOCMD) clean
-    GOTEST=$(GOCMD) test
-    GOGET=$(GOCMD) get
-    BINARY_NAME=SpaceInvaders
-    BINARY_UNIX=$(BINARY_NAME)_unix
-    
-    all: test build
-    build: 
-            $(GOBUILD) -o $(BINARY_NAME) -v
-    test: 
-            $(GOTEST) -v ./...
-    clean: 
-            $(GOCLEAN)
-            rm -f $(BINARY_NAME)
-            rm -f $(BINARY_UNIX)
-    run:
-            $(GOBUILD) -o $(BINARY_NAME) -v ./...
-            ./$(BINARY_NAME)
-    deps:
-            $(GOGET) "github.com/faiface/pixel"
-            $(GOGET) "github.com/faiface/pixel/imdraw"
-            $(GOGET) "github.com/faiface/pixel/pixelgl"
-            $(GOGET) "golang.org/x/image/colornames"
-    
-    build-linux:
-            CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_UNIX) -v
+# Makefile taken from https://sohlich.github.io/post/go_makefile/
+# Basic go commands
+
+GOCMD=go
+GOBUILD=$(GOCMD) build
+GOCLEAN=$(GOCMD) clean
+GOGET=$(GOCMD) get
+
+# Binary names
+BINARY_NAME= SpaceInvaders
+BINARY_UNIX=$(BINARY_NAME)_unix
+
+build:
+	$(GOGET) -v
+	$(GOBUILD) -o $(BINARY_NAME) -v
+
+run:
+	$(GOGET) -v
+	$(GOBUILD) -o $(BINARY_NAME) -v ./...
+	./$(BINARY_NAME)
+
+clean:
+	$(GOCLEAN)
+	rm -f $(BINARY_NAME)
+	rm -f $(BINARY_UNIX)
+
+deps:
+    $(GOGET) "github.com/faiface/pixel"
+    $(GOGET) "github.com/faiface/pixel/imdraw"
+    $(GOGET) "github.com/faiface/pixel/pixelgl"
+    $(GOGET) "golang.org/x/image/colornames"
+
+build-linux:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_UNIX) -v
